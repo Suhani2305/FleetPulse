@@ -139,30 +139,30 @@ const VehiclesPage = () => {
     return (
         <div className="space-y-6 pb-20">
             {/* Header section */}
-            <div className="text-center space-y-4 py-4 relative">
-                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-6xl font-black text-gray-900 tracking-tighter uppercase">
+            <div className="text-center space-y-3 py-4 relative">
+                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter uppercase">
                     Vehicle <span className="text-[#21a0b5]">List</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.4em] text-xs">Manage all company vehicles and assets</p>
-                <div className="w-24 h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.4em] text-[10px] md:text-xs">Manage all company vehicles and assets</p>
+                <div className="w-16 md:w-24 h-1 md:h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-4"></div>
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
                 {stats.map((s, i) => (
-                    <motion.div key={i} whileHover={{ y: -5 }} className="bg-white border border-gray-100 p-8 rounded-2xl shadow-sm flex items-center justify-between">
+                    <motion.div key={i} whileHover={{ y: -5 }} className="bg-white border border-gray-100 p-4 md:p-8 rounded-[1.5rem] md:rounded-2xl shadow-sm flex flex-row items-center justify-between gap-2">
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">{s.label}</p>
-                            <h3 className="text-4xl font-black text-gray-900">{s.value}</h3>
+                            <p className="text-[11px] md:text-[10px] font-black uppercase tracking-tight md:tracking-widest text-gray-400 mb-1 leading-none">{s.label}</p>
+                            <h3 className="text-xl md:text-4xl font-black text-gray-900">{s.value}</h3>
                         </div>
-                        <div className={`text-4xl p-5 ${s.color} rounded-2xl`}>{s.icon}</div>
+                        <div className={`text-lg md:text-4xl p-2 md:p-5 ${s.color} rounded-xl md:rounded-2xl shrink-0`}>{s.icon}</div>
                     </motion.div>
                 ))}
             </div>
 
             {/* Toolbar */}
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-wrap items-center gap-6">
-                <div className="flex-1 min-w-[300px] relative">
+            <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-6">
+                <div className="flex-1 relative">
                     <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
                     <input
                         type="text" placeholder="Search by plate or model..."
@@ -171,22 +171,22 @@ const VehiclesPage = () => {
                     />
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <select className="bg-gray-50 border-none ring-1 ring-gray-100 px-4 py-3 rounded-xl text-xs font-black text-gray-700 outline-none" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <div className="flex items-center gap-3 md:gap-4">
+                    <select className="flex-1 md:flex-none bg-gray-50 border-none ring-1 ring-gray-100 px-4 py-4 md:py-3 rounded-xl text-xs font-black text-gray-700 outline-none" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                         <option value="All">All Status</option>
                         <option value="Moving">Moving</option>
                         <option value="Stopped">Stopped</option>
                         <option value="Maintenance">Maintenance</option>
                         <option value="Idle">Idle</option>
                     </select>
-                    <button onClick={handleOpenAddModal} className="bg-[#21a0b5] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#1a8396] shadow-lg shadow-[#21a0b5]/20 transition-all">
-                        ➕ Add Vehicle
+                    <button onClick={handleOpenAddModal} className="grow md:grow-0 bg-[#21a0b5] text-white px-6 md:px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#1a8396] shadow-lg shadow-[#21a0b5]/20 transition-all">
+                        ➕ Add
                     </button>
                 </div>
             </div>
 
             {/* Vehicle Table */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden overflow-x-auto">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50/50">
                         <tr>
@@ -238,20 +238,20 @@ const VehiclesPage = () => {
                 {showModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20">
-                            <div className="bg-[#21a0b5] p-10 text-white text-center">
-                                <h2 className="text-3xl font-black uppercase tracking-tighter">{isEditing ? 'Edit Vehicle' : 'Register Vehicle'}</h2>
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20 max-h-[90vh] overflow-y-auto">
+                            <div className="bg-[#21a0b5] p-6 md:p-10 text-white text-center">
+                                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">{isEditing ? 'Edit Vehicle' : 'Register Vehicle'}</h2>
                                 <p className="text-[10px] opacity-80 uppercase mt-2 font-black tracking-widest">Update fleet asset properties</p>
                             </div>
 
-                            <form onSubmit={handleSaveVehicle} className="p-10 space-y-6">
+                            <form onSubmit={handleSaveVehicle} className="p-6 md:p-10 space-y-6">
                                 {message.text && (
                                     <div className={`p-4 rounded-xl text-[10px] font-black text-center uppercase border ${message.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
                                         {message.text}
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Plate Number</label>
                                         <input
@@ -274,7 +274,7 @@ const VehiclesPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Vehicle Type</label>
                                         <select

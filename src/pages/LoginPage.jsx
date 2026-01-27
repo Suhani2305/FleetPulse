@@ -91,12 +91,12 @@ const LoginPage = () => {
                                 <motion.h2
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="text-4xl font-black text-gray-900 tracking-tighter uppercase"
+                                    className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase"
                                 >
                                     Login to <span className="text-[#21a0b5]">Access</span>
                                 </motion.h2>
-                                <p className="text-gray-500 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Fleet Management Portal</p>
-                                <div className="w-12 h-1 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
+                                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[8px] md:text-[10px]">Secure Fleet Management Portal</p>
+                                <div className="w-10 md:w-12 h-0.5 md:h-1 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
                             </div>
 
                             <form onSubmit={handleLogin} className="space-y-8">

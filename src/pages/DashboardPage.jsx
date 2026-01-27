@@ -140,35 +140,35 @@ const DashboardPage = () => {
         <div className="space-y-6 pb-20">
 
             {/* Header section */}
-            <div className="text-center space-y-4 py-4 relative">
+            <div className="text-center space-y-3 py-4 relative">
                 <motion.h1
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-6xl font-black text-gray-900 tracking-tighter uppercase"
+                    className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter uppercase"
                 >
                     Fleet <span className="text-[#21a0b5]">Dashboard</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.4em] text-xs">Quick summary of your fleet and vehicles</p>
-                <div className="w-24 h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.4em] text-[10px] md:text-xs">Quick summary of your fleet and vehicles</p>
+                <div className="w-16 md:w-24 h-1 md:h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-4"></div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {statsCards.map((s, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className={`bg-white border border-gray-100 p-8 rounded-[2rem] relative shadow-sm group hover:shadow-md transition-all`}
+                        className={`bg-white border border-gray-100 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] relative shadow-sm group hover:shadow-md transition-all`}
                     >
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-row justify-between items-center md:items-center gap-2">
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">{s.label}</p>
-                                <h3 className="text-4xl font-black text-gray-900 tracking-tighter">{s.value}</h3>
-                                <p className="text-[10px] font-black mt-2 uppercase text-[#21a0b5]">{s.grow}</p>
+                                <p className="text-[11px] md:text-[10px] font-black uppercase tracking-tight md:tracking-widest text-gray-400 mb-1 leading-none">{s.label}</p>
+                                <h3 className="text-xl md:text-4xl font-black text-gray-900 tracking-tighter">{s.value}</h3>
+                                <p className="text-[9px] md:text-[10px] font-black mt-1 md:mt-2 uppercase text-[#21a0b5]">{s.grow}</p>
                             </div>
-                            <div className="text-3xl p-4 bg-gray-50 rounded-2xl group-hover:scale-110 transition-transform duration-500">{s.icon}</div>
+                            <div className="text-lg md:text-3xl p-2 md:p-4 bg-gray-50 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform duration-500 shrink-0">{s.icon}</div>
                         </div>
                     </motion.div>
                 ))}
@@ -177,27 +177,27 @@ const DashboardPage = () => {
             {/* Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                <motion.div className="lg:col-span-8 bg-white border border-gray-100 p-8 rounded-[2.5rem] shadow-sm">
-                    <div className="flex justify-between items-center mb-10">
-                        <h4 className="text-xl font-black text-gray-900 uppercase tracking-tight">Fleet Usage Activity</h4>
+                <motion.div className="lg:col-span-8 bg-white border border-gray-100 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-sm">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-8 md:mb-10">
+                        <h4 className="text-base md:text-xl font-black text-gray-900 uppercase tracking-tight">Fleet Usage Activity</h4>
                         <div className="flex gap-2">
                             {['24H', 'LIVE'].map(t => (
                                 <span key={t} className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${t === 'LIVE' ? 'bg-[#21a0b5] text-white shadow-lg shadow-[#21a0b5]/20' : 'bg-gray-50 text-gray-400'}`}>{t}</span>
                             ))}
                         </div>
                     </div>
-                    <div className="h-80 w-full">
+                    <div className="h-64 md:h-80 w-full">
                         <Line data={lineData} options={chartOptions} />
                     </div>
                 </motion.div>
 
-                <motion.div className="lg:col-span-4 bg-white border border-gray-100 p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center shadow-sm">
-                    <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight mb-8">Asset States</h4>
-                    <div className="h-64 w-64 relative">
+                <motion.div className="lg:col-span-4 bg-white border border-gray-100 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] flex flex-col items-center justify-center text-center shadow-sm">
+                    <h4 className="text-base md:text-lg font-black text-gray-900 uppercase tracking-tight mb-6 md:mb-8">Asset States</h4>
+                    <div className="h-48 w-48 md:h-64 md:w-64 relative">
                         <Doughnut data={doughnutData} options={{ ...chartOptions, cutout: '75%' }} />
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span className="text-4xl font-black text-gray-900 leading-none">{fleetStats.total}</span>
-                            <span className="text-[8px] font-black uppercase text-gray-400 tracking-[0.2em] mt-2 italic">Total Units</span>
+                            <span className="text-xl md:text-4xl font-black text-gray-900 leading-none">{fleetStats.total}</span>
+                            <span className="text-[7px] md:text-[8px] font-black uppercase text-gray-400 tracking-[0.1em] md:tracking-[0.2em] mt-1 md:mt-2 italic">Total Units</span>
                         </div>
                     </div>
                 </motion.div>

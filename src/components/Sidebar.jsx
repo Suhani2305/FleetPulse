@@ -52,15 +52,25 @@ const navSections = [
     }
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ onClose }) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const userRole = user.role || 'Manager';
 
     return (
-        <div className="h-screen w-72 bg-[#0a111a] text-white flex flex-col fixed left-0 top-0 z-50 shadow-2xl overflow-hidden border-r border-white/5">
+        <div className="h-screen w-72 bg-[#0a111a] text-white flex flex-col z-50 shadow-2xl overflow-hidden border-r border-white/5">
 
             {/* Brand Logo - Fixed */}
-            <div className="p-8 pb-6 bg-[#0a111a] z-10">
+            <div className="p-8 pb-6 bg-[#0a111a] z-10 relative">
+                {/* Mobile Close Button */}
+                <button
+                    onClick={onClose}
+                    className="lg:hidden absolute right-4 top-8 p-2 text-gray-500 hover:text-white transition-colors"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
                 <h2 className="text-2xl font-black tracking-tighter text-white">
                     FLEET<span className="text-[#21a0b5]">PULSE</span>
                 </h2>
@@ -87,6 +97,7 @@ const Sidebar = () => {
                                     <NavLink
                                         key={item.path}
                                         to={item.path}
+                                        onClick={onClose}
                                         className={({ isActive }) =>
                                             `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative ${isActive
                                                 ? 'bg-[#21a0b5] text-white shadow-xl shadow-[#21a0b5]/20'
