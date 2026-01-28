@@ -101,7 +101,7 @@ const Layout = () => {
             </AnimatePresence>
 
             {/* Sidebar */}
-            <div className={`fixed lg:relative z-50 transition-transform duration-300 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+            <div className={`fixed lg:sticky lg:top-0 lg:h-screen z-50 transition-transform duration-300 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
                 <Sidebar onClose={() => setIsSidebarOpen(false)} />
             </div>
 

@@ -72,18 +72,18 @@ const AnalyticsPage = () => {
         <div className="space-y-10 pb-20">
             {/* Header */}
             <div className="flex justify-between items-end">
-                <div className="space-y-2">
-                    <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-5xl font-black text-gray-900 tracking-tighter uppercase">
+                <div className="space-y-1">
+                    <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">
                         Fleet <span className="text-[#21a0b5]">Analytics</span>
                     </motion.h1>
                     <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Strategic insights and performance metrics</p>
                 </div>
-                <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-100">
                     {['Daily', 'Weekly', 'Monthly'].map(t => (
                         <button
                             key={t}
                             onClick={() => setTimeframe(t)}
-                            className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${timeframe === t ? 'bg-[#21a0b5] text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                            className={`px-6 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${timeframe === t ? 'bg-[#21a0b5] text-white' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                             {t}
                         </button>

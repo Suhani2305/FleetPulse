@@ -130,7 +130,7 @@ const DashboardPage = () => {
     };
 
     const statsCards = [
-        { label: 'Total Fleet', value: fleetStats.total, grow: 'Live Nodes', icon: '🚛', color: 'from-blue-500/10 to-blue-600/5' },
+        { label: 'Total Fleet', value: fleetStats.total, grow: 'All Vehicles', icon: '🚛', color: 'from-blue-500/10 to-blue-600/5' },
         { label: 'Moving Now', value: fleetStats.active, grow: 'On Road', icon: '⚡', color: 'from-emerald-500/10 to-emerald-600/5' },
         { label: 'Maintenance', value: fleetStats.maintenance, grow: 'In Workshop', icon: '🔧', color: 'from-amber-500/10 to-amber-600/5' },
         { label: 'Stopped', value: fleetStats.stopped, grow: 'Parked', icon: '🛑', color: 'from-red-500/10 to-red-600/5' },
@@ -144,12 +144,12 @@ const DashboardPage = () => {
                 <motion.h1
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter uppercase"
+                    className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase"
                 >
                     Fleet <span className="text-[#21a0b5]">Dashboard</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.4em] text-[10px] md:text-xs">Quick summary of your fleet and vehicles</p>
-                <div className="w-16 md:w-24 h-1 md:h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs">Your business fleet at a glance</p>
+                <div className="w-12 md:w-16 h-1 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-3"></div>
             </div>
 
             {/* Stats Cards */}
@@ -160,15 +160,15 @@ const DashboardPage = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className={`bg-white border border-gray-100 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] relative shadow-sm group hover:shadow-md transition-all`}
+                        className={`bg-white border border-gray-100 p-4 md:p-6 rounded-[1.2rem] md:rounded-[1.5rem] relative shadow-sm group hover:shadow-md transition-all`}
                     >
                         <div className="flex flex-row justify-between items-center md:items-center gap-2">
                             <div>
-                                <p className="text-[11px] md:text-[10px] font-black uppercase tracking-tight md:tracking-widest text-gray-400 mb-1 leading-none">{s.label}</p>
-                                <h3 className="text-xl md:text-4xl font-black text-gray-900 tracking-tighter">{s.value}</h3>
-                                <p className="text-[9px] md:text-[10px] font-black mt-1 md:mt-2 uppercase text-[#21a0b5]">{s.grow}</p>
+                                <p className="text-[10px] font-black uppercase tracking-tight md:tracking-widest text-gray-400 mb-1 leading-none">{s.label}</p>
+                                <h3 className="text-lg md:text-3xl font-black text-gray-900 tracking-tighter">{s.value}</h3>
+                                <p className="text-[8px] md:text-[9px] font-black mt-1 md:mt-2 uppercase text-[#21a0b5]">{s.grow}</p>
                             </div>
-                            <div className="text-lg md:text-3xl p-2 md:p-4 bg-gray-50 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform duration-500 shrink-0">{s.icon}</div>
+                            <div className="text-base md:text-2xl p-2 md:p-3 bg-gray-50 rounded-xl md:rounded-2xl group-hover:scale-110 transition-transform duration-500 shrink-0">{s.icon}</div>
                         </div>
                     </motion.div>
                 ))}
@@ -179,7 +179,7 @@ const DashboardPage = () => {
 
                 <motion.div className="lg:col-span-8 bg-white border border-gray-100 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-sm">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-8 md:mb-10">
-                        <h4 className="text-base md:text-xl font-black text-gray-900 uppercase tracking-tight">Fleet Usage Activity</h4>
+                        <h4 className="text-base md:text-xl font-black text-gray-900 uppercase tracking-tight">Active Vehicles Throughout Day</h4>
                         <div className="flex gap-2">
                             {['24H', 'LIVE'].map(t => (
                                 <span key={t} className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${t === 'LIVE' ? 'bg-[#21a0b5] text-white shadow-lg shadow-[#21a0b5]/20' : 'bg-gray-50 text-gray-400'}`}>{t}</span>
@@ -192,36 +192,36 @@ const DashboardPage = () => {
                 </motion.div>
 
                 <motion.div className="lg:col-span-4 bg-white border border-gray-100 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] flex flex-col items-center justify-center text-center shadow-sm">
-                    <h4 className="text-base md:text-lg font-black text-gray-900 uppercase tracking-tight mb-6 md:mb-8">Asset States</h4>
+                    <h4 className="text-base md:text-lg font-black text-gray-900 uppercase tracking-tight mb-6 md:mb-8">Vehicle Status</h4>
                     <div className="h-48 w-48 md:h-64 md:w-64 relative">
                         <Doughnut data={doughnutData} options={{ ...chartOptions, cutout: '75%' }} />
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                             <span className="text-xl md:text-4xl font-black text-gray-900 leading-none">{fleetStats.total}</span>
-                            <span className="text-[7px] md:text-[8px] font-black uppercase text-gray-400 tracking-[0.1em] md:tracking-[0.2em] mt-1 md:mt-2 italic">Total Units</span>
+                            <span className="text-[7px] md:text-[8px] font-black uppercase text-gray-400 tracking-[0.1em] md:tracking-[0.2em] mt-1 md:mt-2 italic">Total Fleet</span>
                         </div>
                     </div>
                 </motion.div>
 
             </div>
 
-            {/* Real Assets Table */}
+            {/* Live Tracking Table */}
             <div className="bg-white border border-gray-100 rounded-[2.5rem] overflow-hidden shadow-sm">
                 <div className="p-8 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
                     <h4 className="text-sm font-black text-gray-900 uppercase tracking-widest flex items-center gap-3">
-                        Live Tracking Overview
+                        Live Tracking List
                         <span className="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black uppercase">{fleetStats.active} Moving</span>
                     </h4>
-                    <button onClick={fetchDashboardData} className="text-[10px] font-black uppercase tracking-widest text-[#21a0b5] hover:underline">Manual Sync</button>
+                    <button onClick={fetchDashboardData} className="text-[10px] font-black uppercase tracking-widest text-[#21a0b5] hover:underline">Refresh Now</button>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="bg-gray-50/30">
                             <tr>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Plate Number</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Model</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">State</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">ID Number / Plate</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Vehicle Type</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Status</th>
                                 <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Speed</th>
-                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Driver</th>
+                                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-gray-400">Driver Name</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -236,16 +236,16 @@ const DashboardPage = () => {
                                         </div>
                                     </td>
                                     <td className="px-8 py-6 text-xs font-black text-gray-700">{v.currentSpeed} km/h</td>
-                                    <td className="px-8 py-6 text-xs font-bold text-gray-400 italic">@{v.driverName || 'Unassigned'}</td>
+                                    <td className="px-8 py-6 text-xs font-bold text-gray-400 italic">{v.driverName || 'Not Assigned'}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    {liveVehicles.length === 0 && <div className="py-20 text-center text-xs text-gray-300 font-bold italic tracking-widest uppercase">Connecting to Fleet Database...</div>}
+                    {liveVehicles.length === 0 && <div className="py-20 text-center text-xs text-gray-300 font-bold italic tracking-widest uppercase">Fetching Fleet Data...</div>}
                 </div>
             </div>
 
-            {/* Map Interaction Section */}
+            {/* Map Section */}
             <div className="h-[500px] bg-white border border-gray-100 rounded-[3rem] overflow-hidden relative shadow-sm">
                 <img src="/src/assets/dark_fleet_map_mockup.png" className="w-full h-full object-cover opacity-90" alt="Fleet Map" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-transparent"></div>
@@ -254,17 +254,17 @@ const DashboardPage = () => {
                     <div className="bg-white/80 backdrop-blur-xl border border-gray-200 p-8 rounded-[2.5rem] flex justify-between items-center shadow-xl">
                         <div className="flex gap-12">
                             <div>
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Coverage</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Distance</p>
                                 <p className="text-3xl font-black text-gray-900 tracking-tighter">18,242 <span className="text-sm uppercase text-gray-400">km</span></p>
                             </div>
                             <div className="h-12 w-[1px] bg-gray-100"></div>
                             <div>
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Signal Health</p>
-                                <p className="text-3xl font-black text-emerald-500 tracking-tighter">Stable <span className="text-sm uppercase text-gray-400">12ms</span></p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">GPS Signal</p>
+                                <p className="text-3xl font-black text-emerald-500 tracking-tighter">Excellent <span className="text-sm uppercase text-gray-400">100%</span></p>
                             </div>
                         </div>
                         <button className="bg-[#21a0b5] text-white px-10 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-[#21a0b5]/20 hover:scale-105 transition-all active:scale-95">
-                            Launch Full Interface
+                            Open Full Map
                         </button>
                     </div>
                 </div>

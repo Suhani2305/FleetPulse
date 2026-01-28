@@ -140,7 +140,7 @@ const VehiclesPage = () => {
         <div className="space-y-6 pb-20">
             {/* Header section */}
             <div className="text-center space-y-3 py-4 relative">
-                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter uppercase">
+                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">
                     Vehicle <span className="text-[#21a0b5]">List</span>
                 </motion.h1>
                 <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.4em] text-[10px] md:text-xs">Manage all company vehicles and assets</p>
@@ -237,14 +237,16 @@ const VehiclesPage = () => {
             <AnimatePresence>
                 {showModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-white/20 max-h-[90vh] overflow-y-auto">
-                            <div className="bg-[#21a0b5] p-6 md:p-10 text-white text-center">
-                                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">{isEditing ? 'Edit Vehicle' : 'Register Vehicle'}</h2>
-                                <p className="text-[10px] opacity-80 uppercase mt-2 font-black tracking-widest">Update fleet asset properties</p>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-white/10 backdrop-blur-3xl" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="bg-[#21a0b5] p-6 md:p-8 text-white">
+                                <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight">
+                                    {isEditing ? <>Update <span className="text-black/30">Vehicle</span></> : <>Register <span className="text-black/30">New Asset</span></>}
+                                </h2>
+                                <p className="text-[9px] opacity-80 uppercase mt-1 font-black tracking-widest">Digital Documentation & Fleet Integration</p>
                             </div>
 
-                            <form onSubmit={handleSaveVehicle} className="p-6 md:p-10 space-y-6">
+                            <form onSubmit={handleSaveVehicle} className="p-6 md:p-8 space-y-6 overflow-y-auto custom-scrollbar">
                                 {message.text && (
                                     <div className={`p-4 rounded-xl text-[10px] font-black text-center uppercase border ${message.type === 'success' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
                                         {message.text}

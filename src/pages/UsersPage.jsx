@@ -161,12 +161,16 @@ const UsersPage = () => {
         <div className="space-y-6 pb-20 max-w-[1600px] mx-auto px-4">
 
             {/* Header section */}
-            <div className="text-center space-y-4 py-4 relative">
-                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-6xl font-black text-gray-900 tracking-tighter uppercase">
-                    Manage <span className="text-[#21a0b5]">Users</span>
+            <div className="text-center space-y-3 py-4 relative">
+                <motion.h1
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase"
+                >
+                    User <span className="text-[#21a0b5]">Management</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.4em] text-xs">Create and manage login users</p>
-                <div className="w-24 h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs">Secure login access control & administrative roles</p>
+                <div className="w-16 md:w-20 h-1 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-3"></div>
             </div>
 
             {/* KPI Section */}
@@ -286,11 +290,13 @@ const UsersPage = () => {
             <AnimatePresence>
                 {showModal && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
-                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 overflow-hidden border border-white/20">
-                            <div className="bg-[#21a0b5] p-8 text-white text-center">
-                                <h2 className="text-2xl font-black uppercase tracking-widest">{isEditing ? 'Edit User' : 'Add New User'}</h2>
-                                <p className="text-[10px] opacity-90 uppercase mt-2 font-black tracking-widest">{isEditing ? 'Update access details' : 'Register new system account'}</p>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-white/10 backdrop-blur-3xl" />
+                        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl relative z-10 overflow-hidden">
+                            <div className="bg-[#21a0b5] p-8 text-white">
+                                <h2 className="text-xl font-black uppercase tracking-tight">
+                                    {isEditing ? <>Update <span className="text-black/30">User</span></> : <>Register <span className="text-black/30">New User</span></>}
+                                </h2>
+                                <p className="text-[9px] opacity-80 uppercase mt-1 font-black tracking-widest">{isEditing ? 'Update personnel access credentials' : 'Assign system permissions to new staff'}</p>
                             </div>
 
                             <form onSubmit={handleSaveUser} className="p-8 space-y-6 text-gray-900">

@@ -12,14 +12,20 @@ const ReportsPage = () => {
     ];
 
     return (
-        <div className="space-y-10 pb-20">
-            {/* Header */}
-            <div className="text-center space-y-4 py-4 relative">
-                <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-6xl font-black text-gray-900 tracking-tighter uppercase">
+        <div className="space-y-10 pb-20 max-w-[1600px] mx-auto">
+            {/* Header section (Unified Live Map Style) */}
+            <div className="text-center space-y-3 py-6 relative">
+                <motion.h1
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-900 tracking-tighter uppercase leading-none"
+                >
                     Fleet <span className="text-[#21a0b5]">Intelligence</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.4em] text-xs">Generate and Export Professional Reports</p>
-                <div className="w-24 h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[9px] md:text-[10px]">
+                    Generate and Export Professional Analytical Reports
+                </p>
+                <div className="w-12 md:w-16 h-1 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-3"></div>
             </div>
 
             {/* Quick Filter Bar */}
