@@ -1,35 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-// Fix for default marker icons in Leaflet + React
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2x,
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
-});
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { io } from 'socket.io-client';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
 
-// Component to handle map center changes
-const ChangeView = ({ center, zoom }) => {
-    const map = useMap();
-    map.setView(center, zoom);
-    return null;
+const mapContainerStyle = {
+    width: '100%',
+    height: '100%',
 };
 
+const defaultCenter = {
+    lat: 28.6139,
+    lng: 77.2090, // Delhi
+};
+
+// Premium Dark Mode Style for Google Maps
+const darkMapStyle = [
+    { elementType: "geometry", stylers: [{ color: "#0a111a" }] },
+    { elementType: "labels.text.stroke", stylers: [{ color: "#0a111a" }] },
+    { elementType: "labels.text.fill", stylers: [{ color: "#4b5563" }] },
+    { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#6b7280" }] },
+    { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#21a0b5" }] },
+    { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#0d1a26" }] },
+    { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#2d5a27" }] },
+    { featureType: "road", elementType: "geometry", stylers: [{ color: "#1c2c3e" }] },
+    { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#1c2c3e" }] },
+    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#4b5563" }] },
+    { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#21a0b5", opacity: 0.1 }] },
+    { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#21a0b5", weight: 0.1 }] },
+    { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#21a0b5" }] },
+    { featureType: "transit", elementType: "geometry", stylers: [{ color: "#1c2c3e" }] },
+    { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#21a0b5" }] },
+    { featureType: "water", elementType: "geometry", stylers: [{ color: "#05090f" }] },
+    { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#05090f" }] },
+    { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#05090f" }] },
+];
+
 const LiveMapPage = () => {
+    const { isLoaded, loadError } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        libraries: ['drawing']
+    });
+
     const [vehicles, setVehicles] = useState([]);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [map, setMap] = useState(null);
+    const socketRef = useRef(null);
 
+    // Initial Fetch
     const fetchVehicles = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -39,11 +61,7 @@ const LiveMapPage = () => {
             const data = await response.json();
             if (data.success) {
                 setVehicles(data.vehicles);
-                // If a vehicle is selected, update its data from the fresh list
-                if (selectedVehicle) {
-                    const updated = data.vehicles.find(v => v._id === selectedVehicle._id);
-                    if (updated) setSelectedVehicle(updated);
-                } else if (data.vehicles.length > 0) {
+                if (data.vehicles.length > 0 && !selectedVehicle) {
                     setSelectedVehicle(data.vehicles[0]);
                 }
             }
@@ -56,25 +74,71 @@ const LiveMapPage = () => {
 
     useEffect(() => {
         fetchVehicles();
-        const interval = setInterval(fetchVehicles, 5000); // Fast updates for Live tracking
-        return () => clearInterval(interval);
-    }, [selectedVehicle?._id]);
 
-    const defaultCenter = [28.6139, 77.2090]; // Delhi
+        // 🔌 Connect Socket.io
+        socketRef.current = io(API_BASE_URL);
+
+        socketRef.current.on('connect', () => {
+            console.log('✅ Real-time Link established');
+        });
+
+        // 🚛 Handle Live Updates
+        socketRef.current.on('vehicle-update', (updatedVehicle) => {
+            console.log('📡 Live Update:', updatedVehicle.plateNumber);
+
+            setVehicles(prev => prev.map(v =>
+                v._id === updatedVehicle._id ? { ...v, ...updatedVehicle } : v
+            ));
+
+            // Update selected vehicle data if it was the one updated
+            setSelectedVehicle(prev => {
+                if (prev && prev._id === updatedVehicle._id) {
+                    return { ...prev, ...updatedVehicle };
+                }
+                return prev;
+            });
+        });
+
+        return () => {
+            if (socketRef.current) socketRef.current.disconnect();
+        };
+    }, []);
+
+    const onLoad = useCallback(function callback(m) {
+        setMap(m);
+    }, []);
+
+    const onUnmount = useCallback(function callback(m) {
+        setMap(null);
+    }, []);
+
+    // Pan to selected vehicle only when explicitly selected or significant move
+    useEffect(() => {
+        if (map && selectedVehicle) {
+            map.panTo({
+                lat: selectedVehicle.latitude,
+                lng: selectedVehicle.longitude
+            });
+        }
+    }, [selectedVehicle?._id, map]); // Only pan on initial selection of ID
+
+    if (loadError) {
+        return <div className="p-20 text-center text-red-500 font-bold">Error loading Google Maps. Check your API Key.</div>;
+    }
 
     return (
         <div className="space-y-6 pb-20">
             {/* Header section */}
-            <div className="text-center space-y-4 py-4 relative">
+            <div className="text-center space-y-3 py-4 relative">
                 <motion.h1
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter uppercase"
+                    className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase"
                 >
                     Live <span className="text-[#21a0b5]">Map</span>
                 </motion.h1>
-                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.4em] text-[10px] md:text-xs">See where your vehicles are right now</p>
-                <div className="w-16 md:w-24 h-1 md:h-1.5 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-4"></div>
+                <p className="text-gray-500 font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs">Real-time Satellite Fleet Tracking</p>
+                <div className="w-12 md:w-16 h-1 bg-[#21a0b5] mx-auto rounded-full mt-2 md:mt-3"></div>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 h-screen lg:h-[750px]">
@@ -85,7 +149,7 @@ const LiveMapPage = () => {
                         <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest flex items-center justify-between">
                             Active Assets
                             <span className="bg-[#21a0b5]/10 text-[#21a0b5] px-3 py-1 rounded-full text-[9px] font-black uppercase">
-                                {vehicles.length} Devices
+                                {vehicles.length} Nodes
                             </span>
                         </h3>
                     </div>
@@ -124,40 +188,66 @@ const LiveMapPage = () => {
                 </div>
 
                 {/* 2. Main Map Tracking Area */}
-                <div className="flex-1 rounded-[3rem] border border-gray-100 overflow-hidden relative shadow-2xl bg-gray-100">
+                <div className="flex-1 rounded-[3rem] border border-gray-100 overflow-hidden relative shadow-2xl bg-[#0a111a]">
+                    {isLoaded ? (
+                        <GoogleMap
+                            mapContainerStyle={mapContainerStyle}
+                            center={selectedVehicle ? { lat: selectedVehicle.latitude, lng: selectedVehicle.longitude } : defaultCenter}
+                            zoom={13}
+                            onLoad={onLoad}
+                            onUnmount={onUnmount}
+                            options={{
+                                styles: darkMapStyle,
+                                disableDefaultUI: true,
+                                zoomControl: false,
+                                mapTypeControl: false,
+                                streetViewControl: false,
+                                fullscreenControl: false
+                            }}
+                        >
+                            {vehicles.map((v) => (
+                                <Marker
+                                    key={v._id}
+                                    position={{ lat: v.latitude, lng: v.longitude }}
+                                    onClick={() => setSelectedVehicle(v)}
+                                    icon={{
+                                        path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+                                        fillColor: selectedVehicle?._id === v._id ? "#21a0b5" : "#4b5563",
+                                        fillOpacity: 1,
+                                        strokeWeight: 2,
+                                        strokeColor: "#ffffff",
+                                        scale: 2,
+                                        anchor: isLoaded ? new window.google.maps.Point(12, 24) : null
+                                    }}
+                                />
+                            ))}
 
-                    <MapContainer
-                        center={selectedVehicle ? [selectedVehicle.latitude, selectedVehicle.longitude] : defaultCenter}
-                        zoom={13}
-                        className="w-full h-full z-10"
-                        zoomControl={false}
-                    >
-                        {/* Use CartoDB Dark Matter for a premium dark look */}
-                        <TileLayer
-                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                        />
-
-                        {selectedVehicle && <ChangeView center={[selectedVehicle.latitude, selectedVehicle.longitude]} zoom={15} />}
-
-                        {vehicles.map((v) => (
-                            <Marker
-                                key={v._id}
-                                position={[v.latitude, v.longitude]}
-                                eventHandlers={{
-                                    click: () => setSelectedVehicle(v),
-                                }}
-                            >
-                                <Popup>
-                                    <div className="p-2 font-bold text-xs uppercase">
-                                        <p className="text-[#21a0b5]">{v.plateNumber}</p>
-                                        <p className="text-gray-500 mt-1">{v.driverName}</p>
-                                        <p className="border-t mt-2 pt-2">{v.currentSpeed} KM/H</p>
+                            {selectedVehicle && (
+                                <InfoWindow
+                                    position={{ lat: selectedVehicle.latitude, lng: selectedVehicle.longitude }}
+                                    onCloseClick={() => setSelectedVehicle(null)}
+                                >
+                                    <div className="p-1 min-w-[120px]">
+                                        <p className="font-black text-[10px] uppercase text-[#21a0b5]">{selectedVehicle.plateNumber}</p>
+                                        <p className="text-[9px] font-bold text-gray-500 uppercase">{selectedVehicle.driverName}</p>
+                                        <div className="mt-2 pt-2 border-t border-gray-100 flex justify-between items-center">
+                                            <span className="text-[10px] font-black text-gray-900">{selectedVehicle.currentSpeed} KM/H</span>
+                                            <span className={`w-2 h-2 rounded-full ${selectedVehicle.status === 'Moving' ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                                        </div>
                                     </div>
-                                </Popup>
-                            </Marker>
-                        ))}
-                    </MapContainer>
+                                </InfoWindow>
+                            )}
+                        </GoogleMap>
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-[#0a111a]">
+                            <div className="text-center">
+                                <div className="w-20 h-20 bg-[#21a0b5]/20 border border-[#21a0b5]/50 rounded-full flex items-center justify-center animate-ping mb-4 mx-auto">
+                                    <div className="w-4 h-4 bg-[#21a0b5] rounded-full"></div>
+                                </div>
+                                <p className="text-[#21a0b5] font-black uppercase tracking-[0.5em] text-xs">Syncing Real-time Feed...</p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Telemetry Overlay Card */}
                     {selectedVehicle && (
@@ -189,26 +279,7 @@ const LiveMapPage = () => {
                             </div>
                         </motion.div>
                     )}
-
-                    {/* Map UI Controls */}
-                    <div className="absolute top-8 right-8 flex flex-col gap-3 z-20">
-                        <button className="w-14 h-14 bg-white border border-gray-100 rounded-2xl shadow-xl flex items-center justify-center text-xl hover:bg-gray-50 transition-all">📡</button>
-                        <button className="w-14 h-14 bg-white border border-gray-100 rounded-2xl shadow-xl flex items-center justify-center text-xl hover:bg-gray-50 transition-all">🏗️</button>
-                    </div>
-
-                    {/* Searching Satellites Overlay if loading */}
-                    {isLoading && (
-                        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-30 flex items-center justify-center">
-                            <div className="text-center">
-                                <div className="w-20 h-20 bg-[#21a0b5]/20 border border-[#21a0b5]/50 rounded-full flex items-center justify-center animate-ping mb-4 mx-auto">
-                                    <div className="w-4 h-4 bg-[#21a0b5] rounded-full"></div>
-                                </div>
-                                <p className="text-[#21a0b5] font-black uppercase tracking-[0.5em] text-xs">Syncing Satellites...</p>
-                            </div>
-                        </div>
-                    )}
                 </div>
-
             </div>
         </div>
     );
