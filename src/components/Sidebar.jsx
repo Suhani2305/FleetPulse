@@ -27,8 +27,6 @@ const navSections = [
             { name: 'Alerts', path: '/alerts', icon: '🔔', roles: ['SuperAdmin', 'Admin', 'Manager'] },
             { name: 'Maintenance', path: '/maintenance', icon: '⚒️', roles: ['SuperAdmin', 'Admin'] },
             { name: 'Geofences', path: '/geofences', icon: '🛑', roles: ['SuperAdmin', 'Admin'] },
-            { name: 'User Groups', path: '/user-groups', icon: '📁', roles: ['SuperAdmin'] },
-            { name: 'Parked Scheduler', path: '/scheduler', icon: '🅿️', roles: ['SuperAdmin', 'Admin'] },
         ]
     },
     {
@@ -105,19 +103,23 @@ const Sidebar = ({ onClose }) => {
                                             }`
                                         }
                                     >
-                                        <span className="text-xl group-hover:scale-110 transition-transform duration-300">
-                                            {item.icon}
-                                        </span>
-                                        <span className="text-[13px] font-bold tracking-wide">
-                                            {item.name}
-                                        </span>
+                                        {({ isActive }) => (
+                                            <>
+                                                <span className="text-xl group-hover:scale-110 transition-transform duration-300">
+                                                    {item.icon}
+                                                </span>
+                                                <span className="text-[13px] font-bold tracking-wide">
+                                                    {item.name}
+                                                </span>
 
-                                        {/* Tiny active arrow */}
-                                        {({ isActive }) => isActive && (
-                                            <motion.div
-                                                layoutId="active-nav-bg"
-                                                className="absolute inset-0 bg-gradient-to-r from-transparent to-white/5 rounded-2xl pointer-events-none"
-                                            />
+                                                {/* Tiny active arrow */}
+                                                {isActive && (
+                                                    <motion.div
+                                                        layoutId="active-nav-bg"
+                                                        className="absolute inset-0 bg-gradient-to-r from-transparent to-white/5 rounded-2xl pointer-events-none"
+                                                    />
+                                                )}
+                                            </>
                                         )}
                                     </NavLink>
                                 ))}

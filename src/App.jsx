@@ -17,8 +17,6 @@ import ClientsPage from './pages/ClientsPage';
 import TransportersPage from './pages/TransportersPage';
 import TechniciansPage from './pages/TechniciansPage';
 import CompliancePage from './pages/CompliancePage';
-import GroupsPage from './pages/GroupsPage';
-import SchedulerPage from './pages/SchedulerPage';
 import DistanceReportPage from './pages/DistanceReportPage';
 import FuelPricePage from './pages/FuelPricePage';
 import AnnouncementsPage from './pages/AnnouncementsPage';
@@ -54,8 +52,6 @@ function App() {
           <Route path="checks" element={<CompliancePage />} />
 
           {/* New Page Routes */}
-          <Route path="user-groups" element={<GroupsPage />} />
-          <Route path="scheduler" element={<SchedulerPage />} />
           <Route path="distance-report" element={<DistanceReportPage />} />
           <Route path="fuel-price" element={<FuelPricePage />} />
           <Route path="announcements" element={<AnnouncementsPage />} />
